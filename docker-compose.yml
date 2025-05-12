@@ -1,0 +1,39 @@
+version: '3'
+services:
+  crawler:
+    build:
+      context: ./crawler
+    container_name: crawler
+    command: ["./crawler"]
+    volumes:
+      - ./crawler:/app
+    env_file:
+      - ./crawler/.env
+    depends_on:
+      - backend
+
+  backend:
+    build:
+      context: ./backend
+    container_name: backend
+    command: ["./backend"]
+    volumes:
+      - ./backend:/app
+    env_file:
+      - ./backend/.env
+    ports:
+      - "3001:5000"  # Backend port
+
+  frontend:
+    build:
+      context: ./frontend
+    container_name: frontend
+    command: ["npm", "start"]
+    volumes:
+      - ./frontend:/app
+    ports:
+      - "3000:3000"  # Frontend port
+    depends_on:
+      - backend
+    env_file:
+      - ./frontend/.env
